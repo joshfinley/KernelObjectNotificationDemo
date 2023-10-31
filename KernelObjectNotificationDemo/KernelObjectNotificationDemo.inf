@@ -4,31 +4,74 @@
 
 [Version]
 Signature="$WINDOWS NT$"
-Class=System
-ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318}
+Class=System ; TODO: specify appropriate Class
+ClassGuid={4d36e97d-e325-11ce-bfc1-08002be10318} ; TODO: specify appropriate ClassGuid
 Provider=%ManufacturerName%
-DriverVer=
 CatalogFile=KernelObjectNotificationDemo.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
 PnpLockdown=1
 
-;This template is supported for OS version 17763 (Windows 10 version 1809) and after.
-;For Windows OS prior to Windows 10 1809 set DefaultDestDir = 12
 [DestinationDirs]
-DefaultDestDir = 13
-
+DefaultDestDir = 12
+KernelObjectNotificationDemo_Device_CoInstaller_CopyFiles = 11
 
 [SourceDisksNames]
 1 = %DiskName%,,,""
 
 [SourceDisksFiles]
+KernelObjectNotificationDemo.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
 
+;*****************************************
+; Install Section
+;*****************************************
 
 [Manufacturer]
 %ManufacturerName%=Standard,NT$ARCH$
 
 [Standard.NT$ARCH$]
+%KernelObjectNotificationDemo.DeviceDesc%=KernelObjectNotificationDemo_Device, Root\KernelObjectNotificationDemo ; TODO: edit hw-id
 
+[KernelObjectNotificationDemo_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+KernelObjectNotificationDemo.sys
+
+;-------------- Service installation
+[KernelObjectNotificationDemo_Device.NT.Services]
+AddService = KernelObjectNotificationDemo,%SPSVCINST_ASSOCSERVICE%, KernelObjectNotificationDemo_Service_Inst
+
+; -------------- KernelObjectNotificationDemo driver install sections
+[KernelObjectNotificationDemo_Service_Inst]
+DisplayName    = %KernelObjectNotificationDemo.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\KernelObjectNotificationDemo.sys
+
+;
+;--- KernelObjectNotificationDemo_Device Coinstaller installation ------
+;
+
+[KernelObjectNotificationDemo_Device.NT.CoInstallers]
+AddReg=KernelObjectNotificationDemo_Device_CoInstaller_AddReg
+CopyFiles=KernelObjectNotificationDemo_Device_CoInstaller_CopyFiles
+
+[KernelObjectNotificationDemo_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[KernelObjectNotificationDemo_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[KernelObjectNotificationDemo_Device.NT.Wdf]
+KmdfService =  KernelObjectNotificationDemo, KernelObjectNotificationDemo_wdfsect
+[KernelObjectNotificationDemo_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
 
 [Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
 ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
-DiskName="KernelObjectNotificationDemo Source Disk"
+DiskName = "KernelObjectNotificationDemo Installation Disk"
+KernelObjectNotificationDemo.DeviceDesc = "KernelObjectNotificationDemo Device"
+KernelObjectNotificationDemo.SVCDESC = "KernelObjectNotificationDemo Service"
