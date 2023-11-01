@@ -25,13 +25,6 @@
     <ClCompile Include="Driver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Device.h" />
-    <ClInclude Include="Driver.h" />
-    <ClInclude Include="Public.h" />
-    <ClInclude Include="Queue.h" />
-    <ClInclude Include="Trace.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Inf Include="KernelObjectNotificationDemo.inf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -142,6 +135,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Trace.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

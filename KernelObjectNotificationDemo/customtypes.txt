@@ -1,0 +1,10 @@
+typedef struct _OBJECT_CALLBACK_ENTRY {
+    LIST_ENTRY CallbackList;      // Doubly linked list pointers
+    OB_OPERATION Operations;      // Operation(s) to callback
+    ULONG Active;                 // Indicates if the callback is active
+    POBJECT_TYPE ObjectType;      // Object type pointer
+    POB_PRE_OPERATION_CALLBACK PreOperation;    // Pre-operation callback
+    POB_POST_OPERATION_CALLBACK PostOperation;  // Post-operation callback
+    PVOID RegistrationContext;    // Context registered with the callback
+} OBJECT_CALLBACK_ENTRY, *POBJECT_CALLBACK_ENTRY;
+
